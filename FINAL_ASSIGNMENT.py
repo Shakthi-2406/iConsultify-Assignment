@@ -13,13 +13,13 @@ csvfile =  open("DATA.csv", "w", encoding='utf-8', newline="")
 writer = csv.writer(csvfile)
 writer.writerow(["TITLE","LINK"])
 
-check_repitition = []
+check_repetition = []
 
 def navigateSubLinks(current_sub_link):
 
     samp_soup = BeautifulSoup(requests.get(f'https://www.coursef.com/{current_sub_link}').text, 'lxml')
     part_link = 'https://www.coursef.com/'+current_sub_link[current_sub_link.find('=')+1:current_sub_link.find('&')].replace('+','-')
-    check_repitition.append(part_link)
+    check_repetition.append(part_link)
 
     try:
         part_title = samp_soup.find('h1').text
@@ -31,7 +31,7 @@ def navigateSubLinks(current_sub_link):
     # FOR CHAINING THROUGH LINKS
     for a in samp_soup.find_all('a',class_='kw_related'):
         x = 'https://www.coursef.com/'+a.get('data-link')[a.get('data-link').find('=')+1:a.get('data-link').find('&')].replace('+','-')
-        if x not in check_repitition:
+        if x not in check_repetition:
             navigateSubLinks(a.get('data-link'))
 
 
