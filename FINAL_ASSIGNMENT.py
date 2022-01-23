@@ -29,10 +29,12 @@ def navigateSubLinks(current_sub_link):
 
     try:
         part_title = samp_soup.find('h1').text
+        writer.writerow([part_title,part_link])
+        
     except AttributeError:
-        part_title = "No Title"
+        part_title = "No Title" #I found some dead end links which keeps on loading.... and returns a fail statement that's why the deadlink has no attribute of h1, so not storing that in csv
 
-    writer.writerow([part_title,part_link])
+
 
     # FOR CHAINING THROUGH LINKS
     for a in samp_soup.find_all('a',class_='kw_related'):
