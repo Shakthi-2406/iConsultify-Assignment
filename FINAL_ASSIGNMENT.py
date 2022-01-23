@@ -51,9 +51,6 @@ for div in div_collection:
         title = soup1.find('h1').text
         writer.writerow([title,course_link_val])
 
-        print(title)
-        print(course_link_val)
-
         for a in soup1.find_all('a',class_='kw_related'):
             navigateSubLinks(a.get('data-link'))
 
