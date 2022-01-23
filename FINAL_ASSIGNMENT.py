@@ -38,7 +38,11 @@ def navigateSubLinks(current_sub_link):
 
     # FOR CHAINING THROUGH LINKS
     for a in samp_soup.find_all('a',class_='kw_related'):
-        x = 'https://www.coursef.com/'+a.get('data-link')[a.get('data-link').find('=')+1:a.get('data-link').find('&')].replace('+','-')
+        if current_sub_link.find('%') > 0:
+            right_end = min(a.get('data-link').find('&'),a.get('data-link').find('%'))
+        else:
+            right_end = a.get('data-link').find('&')
+        x = 'https://www.coursef.com/'+a.get('data-link')[a.get('data-link').find('=')+1:right_end].replace('+','-')
         if x not in check_repitition:
             navigateSubLinks(a.get('data-link'))
 
