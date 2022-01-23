@@ -19,7 +19,12 @@ check_repitition = []
 def navigateSubLinks(current_sub_link):
 
     samp_soup = BeautifulSoup(requests.get(f'https://www.coursef.com/{current_sub_link}').text, 'lxml')
-    part_link = 'https://www.coursef.com/'+current_sub_link[current_sub_link.find('=')+1:current_sub_link.find('&')].replace('+','-')
+    if current_sub_link.find('%') > 0:
+        right_end = min(current_sub_link.find('&'),current_sub_link.find('%'))
+    else:
+        right_end = current_sub_link.find('&')
+
+    part_link = 'https://www.coursef.com/'+current_sub_link[current_sub_link.find('=')+1:right_end].replace('+','-')
     check_repitition.append(part_link)
 
     try:
@@ -45,6 +50,9 @@ for div in div_collection:
         soup1 = BeautifulSoup(requests.get(course_link_val).text, 'lxml')
         title = soup1.find('h1').text
         writer.writerow([title,course_link_val])
+
+        print(title)
+        print(course_link_val)
 
         for a in soup1.find_all('a',class_='kw_related'):
             navigateSubLinks(a.get('data-link'))
@@ -108,5 +116,8 @@ for div in div1.find_all('div', class_='text-truncate'):
             navigateSubLinks(a.get('data-link'))
 
 csvfile.close()
+
+
+
 
 
