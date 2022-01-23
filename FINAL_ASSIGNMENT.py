@@ -38,7 +38,7 @@ def navigateSubLinks(current_sub_link):
 
     # FOR CHAINING THROUGH LINKS
     for a in samp_soup.find_all('a',class_='kw_related'):
-        if current_sub_link.find('%') > 0:
+        if a.get('data-link').find('%') > 0:
             right_end = min(a.get('data-link').find('&'),a.get('data-link').find('%'))
         else:
             right_end = a.get('data-link').find('&')
