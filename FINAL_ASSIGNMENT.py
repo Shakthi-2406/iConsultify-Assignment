@@ -9,12 +9,15 @@ bottom_divs = soup.find_all('div', class_='col-md-3')
 main_cat_divs =  soup.find_all('div', class_='card-body')
 div_collection = main_cat_divs + bottom_divs
 
-csvfile =  open("DATA.csv", "w", encoding='utf-8', newline="") 
-writer = csv.writer(csvfile)
-writer.writerow(["TITLE","LINK"])
+def write(title,link):
+    csvfile =  open("SCRAPPED_DATA.csv", "a+", encoding='utf-8', newline="") 
+    writer = csv.writer(csvfile)
+    writer.writerow([title,link])
+    csvfile.close()
+
+write("TITLE","LINK")
 
 check_repitition = []
-
 
 def navigateSubLinks(current_sub_link):
 
@@ -29,11 +32,13 @@ def navigateSubLinks(current_sub_link):
 
     try:
         part_title = samp_soup.find('h1').text
-        writer.writerow([part_title,part_link])
-        
-    except AttributeError:
-        part_title = "No Title" #I found some dead end links which keeps on loading.... and returns a fail statement that's why the deadlink has no attribute of h1, so not storing that in csv
+        write(part_title,part_link)
 
+    # Few links are dead which then returns back to home page(which has no h1 tag)and
+    #that's why it throws an attribute error, so not storing them in file
+    except AttributeError:
+    
+        part_title = "No Title" 
 
 
     # FOR CHAINING THROUGH LINKS
@@ -55,13 +60,15 @@ for div in div_collection:
         course_link_val = 'https://www.coursef.com'+ p.find('a').get('href')
         soup1 = BeautifulSoup(requests.get(course_link_val).text, 'lxml')
         title = soup1.find('h1').text
-        writer.writerow([title,course_link_val])
+        # writer.writerow([title,course_link_val])
+
+        write(title,course_link_val)
 
         for a in soup1.find_all('a',class_='kw_related'):
             navigateSubLinks(a.get('data-link'))
 
 
-# # FOR COURSES IN PAGINATORS
+# FOR COURSES IN PAGINATORS
 paginator = 1
 while requests.get(f'https://www.coursef.com/course?page={paginator}').text: #will be true until the page exists (goes till last page)
     sourceC = requests.get(f'https://www.coursef.com/course?page={paginator}').text
@@ -80,7 +87,7 @@ while requests.get(f'https://www.coursef.com/course?page={paginator}').text: #wi
             except AttributeError: #if the course is without title. I found one at "https://www.coursef.com/course?page=14"
                 title = sample_title
 
-            writer.writerow([title,course_link])
+            write(title,course_link)
     paginator += 1
 
 
@@ -101,7 +108,8 @@ while requests.get(f'https://www.coursef.com/blog?page={blog_paginator}').text: 
         except AttributeError: #if the blog is without title.
             title = sample_title
 
-        writer.writerow([title,blog_link])
+        write(title,blog_link)
+
 blog_paginator += 1
 
 
@@ -113,12 +121,14 @@ for div in div1.find_all('div', class_='text-truncate'):
         soupx = BeautifulSoup(requests.get(link_val).text, 'lxml')
         title = soupx.find('h1').text
 
-        writer.writerow([title,link_val])
+        write(title,link_val)
 
         for a in soupx.find_all('a',class_='kw_related'):
             navigateSubLinks(a.get('data-link'))
 
-csvfile.close()
+
+
+
 
 
 
