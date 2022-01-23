@@ -19,7 +19,7 @@ check_repitition = []
 def navigateSubLinks(current_sub_link):
 
     samp_soup = BeautifulSoup(requests.get(f'https://www.coursef.com/{current_sub_link}').text, 'lxml')
-    if current_sub_link.find('%') > 0:
+    if a.get('data-link').find('%') > 0:
         right_end = min(current_sub_link.find('&'),current_sub_link.find('%'))
     else:
         right_end = current_sub_link.find('&')
